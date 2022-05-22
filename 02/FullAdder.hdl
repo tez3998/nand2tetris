@@ -14,4 +14,22 @@ CHIP FullAdder {
 
     PARTS:
     // Put you code here:
+    HalfAdder(a=a, b=b, sum=sumab, carry=carryab);
+    Not(in=a, out=nota);
+    Not(in=b, out=notb);
+    Not(in=c, out=notc);
+
+    // sum
+    And(a=nota, b=notb, out=notanotb);
+    And(a=a, b=b, out=ab);
+    Or(a=notanotb, b=ab, out=out0);
+    And(a=c, b=out0, out=out1);
+    And(a=notc, b=sumab, out=out2);
+    Or(a=out1, b=out2, out=sum);
+
+    // carry
+    Or(a=sumab, b=carryab, out=out3);
+    And(a=out3, b=c, out=out4);
+    And(a=carryab, b=notc, out=out5);
+    Or(a=out4, b=out5, out=carry);
 }
