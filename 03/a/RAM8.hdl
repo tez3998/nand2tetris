@@ -16,8 +16,10 @@ CHIP RAM8 {
 
     PARTS:
     // Put your code here:
+    // 書き込みを行うレジスタを選択する
     DMux8Way(in=load, sel=address, a=load0, b=load1, c=load2, d=load3, e=load4, f=load5, g=load6, h=load7);
 
+    // load#=1のレジスタだけ次回のクロックで書き込みを行う。他のレジスタは現在の値を保持する
     Register(in=in, load=load0, out=out0);
     Register(in=in, load=load1, out=out1);
     Register(in=in, load=load2, out=out2);
@@ -27,5 +29,7 @@ CHIP RAM8 {
     Register(in=in, load=load6, out=out6);
     Register(in=in, load=load7, out=out7);
 
+    // 読み込む予定のないレジスタの値もこの部品までは到達する。ここで読み込むレジスタの値だけをaddressにより選択し出力する
+    // なお、load#=1のとき、次回のクロックで書き込みが行われる予定のレジスタの現在の値も出力される。これは無視すればよい
     Mux8Way16(a=out0, b=out1, c=out2, d=out3, e=out4, f=out5, g=out6, h=out7, sel=address, out=out);
 }
