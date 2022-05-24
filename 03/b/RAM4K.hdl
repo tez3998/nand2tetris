@@ -16,10 +16,10 @@ CHIP RAM4K {
 
     PARTS:
     // Put your code here:
-    // どのRAM4Kに書き込むかを選択
+    // どのRAM512に書き込むかを選択
     DMux8Way(in=load, sel=address[9..11], a=loada, b=loadb, c=loadc, d=loadd, e=loade, f=loadf, g=loadg, h=loadh);
 
-    // load#=1のRAM4Kへだけ書き込み
+    // load#=1のRAM512へだけ書き込み
     RAM512(in=in, load=loada, address=address[0..8], out=outa);
     RAM512(in=in, load=loadb, address=address[0..8], out=outb);
     RAM512(in=in, load=loadc, address=address[0..8], out=outc);
@@ -29,6 +29,6 @@ CHIP RAM4K {
     RAM512(in=in, load=loadg, address=address[0..8], out=outg);
     RAM512(in=in, load=loadh, address=address[0..8], out=outh);
 
-    // ある1つのRAM4Kから読み込むか
+    // ある1つのRAM512から読み込むか
     Mux8Way16(a=outa, b=outb, c=outc, d=outd, e=oute, f=outf, g=outg, h=outh, sel=address[9..11], out=out);
 }
