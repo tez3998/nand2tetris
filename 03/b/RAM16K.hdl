@@ -16,4 +16,19 @@ CHIP RAM16K {
 
     PARTS:
     // Put your code here:
+    // どのRAM4Kに書き込むかを選択
+    DMux8Way(in=load, sel=address[11..13], a=loada, b=loadb, c=loadc, d=loadd, e=loade, f=loadf, g=loadg, h=loadh);
+
+    // load#=1のRAM4Kへだけ書き込み
+    RAM4K(in=in, load=loada, address=address[0..11], out=outa);
+    RAM4K(in=in, load=loadb, address=address[0..11], out=outb);
+    RAM4K(in=in, load=loadc, address=address[0..11], out=outc);
+    RAM4K(in=in, load=loadd, address=address[0..11], out=outd);
+    RAM4K(in=in, load=loade, address=address[0..11], out=oute);
+    RAM4K(in=in, load=loadf, address=address[0..11], out=outf);
+    RAM4K(in=in, load=loadg, address=address[0..11], out=outg);
+    RAM4K(in=in, load=loadh, address=address[0..11], out=outh);
+
+    // ある1つのRAM4Kから読み込むか
+    Mux8Way16(a=outa, b=outb, c=outc, d=outd, e=oute, f=outf, g=outg, h=outh, sel=address[11..13], out=out);
 }
