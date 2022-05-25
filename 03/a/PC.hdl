@@ -16,72 +16,13 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    /*
-    // Put your code here:
-    Not(in=load, out=notload);
-    Not(in=inc, out=notinc);
-    Not(in=reset, out=notreset);
-
-
-    // リセットするかをチェック
-    And(a=notload, b=notinc, out=outr0);
-    And(a=outr0, b=reset, out=doreset);
-
-    // 読み込みするかをチェック
-    And(a=notinc, b=notreset, out=outl0);
-    And(a=outl0, b=load, out=doload);
-
-    // インクリメントするかをチェック
-    And(a=notload, b=notreset, out=outi0);
-    And(a=outi0, b=inc, out=doinc);
-
-    // 値を維持するかをチェック
-    And(a=notload, b=notreset, out=outk0);
-    And(a=load, b=reset, out=outk1);
-    Or(a=outk0, b=outk1, out=outk2);
-    And(a=outk2, b=notinc, out=outk3);
-    Xor(a=load, b=reset, out=outk4);
-    And(a=load, b=reset, out=outk5);
-    Or(a=outk4, b=outk5, out=outk6);
-    And(a=inc, b=outk6, out=outk7);
-    Or(a=outk3, b=outk7, out=dokeep);
-
-    // リセット
-    And16(a=false, b=false, out=outr1);
-    Mux16(a=false, b=outr1, sel=doreset, out=outr);
-
-    // 読み込み
-    Mux16(a=false, b=in, sel=doload, out=outl);
-
-    // インクリメント
-    Inc16(in=out3, out=outi1);
-    Mux16(a=false, b=outi1, sel=doinc, out=outi);
-
-    // 維持
-    And16(a=true, b=out3, out=outk9);
-    Mux16(a=false, b=outk9, sel=dokeep, out=outk);
-
-
-    // 合算して書き込み
-    Or16(a=outr, b=outl, out=out0);
-    Or16(a=out0, b=outi, out=out1);
-    Or16(a=out1, b=outk9, out=out2);
-
-    
-    // レジスタに格納
-    Register(in=out2, load=true, out=out3);
-
-    And16(a=true, b=out3, out=out);
-    */
-
     // https://github.com/havivha/Nand2Tetris/blob/master/03/a/PC.hdlのコピペ
-    // なぜこんなに勝手にセレクタの優先順位をつけてもテストが通るのか分からない
     Inc16(in=regout, out=plusone);
-	Mux16(a=false, b=plusone, sel=inc, out=incout);
-	Mux16(a=incout, b=in, sel=load, out=loadout);
-	Mux16(a=loadout, b=false, sel=reset, out=toload);
-	Or(a=load, b=reset, out=loadorreset);
-	Or(a=loadorreset, b=inc, out=loadflag);
+    Mux16(a=false, b=plusone, sel=inc, out=incout);
+    Mux16(a=incout, b=in, sel=load, out=loadout);
+    Mux16(a=loadout, b=false, sel=reset, out=toload);
+    Or(a=load, b=reset, out=loadorreset);
+    Or(a=loadorreset, b=inc, out=loadflag);
     Register(in=toload, load=loadflag, out=regout);
-	Or16(a=regout, b=regout, out=out);
+    Or16(a=regout, b=regout, out=out);
 }
