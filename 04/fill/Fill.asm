@@ -15,53 +15,72 @@
 
 // （注意）動いてない
 
-(Loop)
-    @KBD // キーボードのベースアドレス
+(MainLoop)
+    @KBD
     D=M
-    @White
-    D; JEQ
-    @Black
+    //@Whiten
+    //D; JEQ
+    @Blaken
     0; JMP
 
-(White)
-    @0
+(Whiten)
+    @8192 // (512px x 256px)/16bit。スクリーン中のワードの数
     D=A
-    @color
-    M=D
-    @SetColor
-    0; JMP
-
-(Black)
-    //@65535 // 黒
-    //D=A
-    //@color
-    M=-1
-    @SetColor
-    0; JMP
-
-(SetColor)
     @i
-    M=0
-(SetColorLoop)
+    M=D
+
     @SCREEN
     D=A
-    @i
-    D=D+M
-    @num_word
+    @current_address
     M=D
-    @color
+
+(WhitenLoop)
+    @i
     D=M
-    @num_word
+    @MainLoop
+    D; JEQ
+
+    @current_address
+    M=0
+
+    @current_address
+    M=M+1
+
+    @i
+    M=M-1
+
+    @WhitenLoop
+    0; JMP
+
+(Blaken)
+    @8192 // (512px x 256px)/16bit。スクリーン中のワードの数
+    D=A
+    @i
+    M=D
+
+    @SCREEN
+    D=A
+    @current_address
+    M=D
+
+(BlakenLoop)
+    @i
+    D=M
+    @MainLoop
+    D; JEQ
+
+    @current_address
+    M=-1
+
+    @current_address
+    D=M+1
+    @current_address
     M=D
 
     @i
-    M=M+1
-    @8192
-    D=A // 画面のワード数
-    @num_word
-    D=D-M
-    @SetColorLoop
-    D; JGT
+    D=M-1
+    @i
+    M=D
 
-    @Loop
+    @BlakenLoop
     0; JMP
