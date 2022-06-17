@@ -42,7 +42,7 @@ Or16Way(in=internal, out=out0)
 この場合、inはOr16Way内では入力バスなので、in=a[0..7]のようなinの右辺に[　]を使う記述をしてもエラーは発生しない。
 詳細はプロジェクト2のALU.hdlを参照する。
 
-## エラー：Expression Expected
+## エラー：Expression expected
 プロジェクト4のFill.asmを実装するところで発生した。
 
 Mに直接0、1、-1以外の数字を代入しようとすると発生する。
