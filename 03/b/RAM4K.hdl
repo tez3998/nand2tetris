@@ -29,6 +29,6 @@ CHIP RAM4K {
     RAM512(in=in, load=loadg, address=address[0..8], out=outg);
     RAM512(in=in, load=loadh, address=address[0..8], out=outh);
 
-    // ある1つのRAM512から読み込むか
+    // ある1つのRAM512から読み込む
     Mux8Way16(a=outa, b=outb, c=outc, d=outd, e=oute, f=outf, g=outg, h=outh, sel=address[9..11], out=out);
 }

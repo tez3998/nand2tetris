@@ -29,6 +29,6 @@ CHIP RAM512 {
     RAM64(in=in, load=loadg, address=address[0..5], out=outg);
     RAM64(in=in, load=loadh, address=address[0..5], out=outh);
 
-    // ある1つのRAM64から読み込むか
+    // ある1つのRAM64から読み込む
     Mux8Way16(a=outa, b=outb, c=outc, d=outd, e=oute, f=outf, g=outg, h=outh, sel=address[6..8], out=out);
 }
