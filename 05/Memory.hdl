@@ -28,4 +28,24 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
+    // 書き込むかどうかを決定
+    Not(in=address[14], out=notAddress14);
+    Not(in=address[13], out=notAddress13);
+
+    And(a=load, b=notAddress14, out=loadToRam16k);
+
+    And(a=address[14], b=notAddress13, out=sInternal);
+    And(a=load, b=sInternal, out=loadToScreen);
+
+    // 書き込みと読み込み実行（書き込みはload=1のときのみ）
+    RAM16K(in=in, load=loadToRam16k, address=address[0..13], out=rOut);
+
+    Screen(in=in, load=loadToScreen, address=address[0..12], out=sOut);
+
+    Keyboard(out=kOut);
+
+    // 最終出力を決定
+    //Mux4Way16(a=rOut, b=false, c=sOut, d=kOut, sel=address[13..14], out=out);
+    Mux16(a=sOut, b=kOut, sel=address[13], out=skOut);
+    Mux16(a=rOut, b=skOut, sel=address[14], out=out);
 }
