@@ -17,12 +17,34 @@ CHIP PC {
 
     PARTS:
     // https://github.com/havivha/Nand2Tetris/blob/master/03/a/PC.hdlのコピペ
+
+    // 前回の出力に1だけ加算した値を用意
     Inc16(in=regout, out=plusone);
+
+    // 以下、上記のif文の優先度が低い条件から実行していき、優先度が高い条件が成立した場合は、その都度、値を上書きしていく
+    // ただし、最も優先度の低い条件の「else　out[t+1] = out[t]」（前回の値の保持）は、Registerで実現できるので、その次に優先度の低い条件から実行していく
+
+    // 加算するかどうか
+    // falseには特に意味はない
     Mux16(a=false, b=plusone, sel=inc, out=incout);
+
+    //　新しい値をセットするかどうか
     Mux16(a=incout, b=in, sel=load, out=loadout);
+
+    // 値を0にリセットするかどうか
     Mux16(a=loadout, b=false, sel=reset, out=toload);
+     
+
+    // 書き込み処理が発生しているかどうかを判定
     Or(a=load, b=reset, out=loadorreset);
     Or(a=loadorreset, b=inc, out=loadflag);
+
+
+    // レジスタの値の更新or保持
+    // Registerはload=0のとき、前回の値を保持する
     Register(in=toload, load=loadflag, out=regout);
+
+
+    // 最終的な結果を出力
     Or16(a=regout, b=regout, out=out);
 }
