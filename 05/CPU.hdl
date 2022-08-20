@@ -47,7 +47,7 @@ CHIP CPU {
     ARegister(in=inA, load=loadToA, out=outA);
 
     // Dレジスタ
-    And16(a=true, b=instruction[4], out=loadToD);
+    And(a=true, b=instruction[4], out=loadToD);
     DRegister(in=internalOutM, load=loadToD, out=outD);
 
     // ALU
@@ -58,7 +58,7 @@ CHIP CPU {
     And(a=true, b=instruction[3], out=writeM);
 
     // addressM
-    And16(a=true, b=outA, out=addressM);
+    And16(a=true, b=outA, out[0..14]=addressM);
 
     // PC
     And(a=zr, b=instruction[1], out=outMeetsZero);
@@ -69,5 +69,5 @@ CHIP CPU {
     And(a=notZrNg, b=instruction[0], out=outMeetsPg);
     Or(a=outMeetsZero, b=outMeetsNg, out=outMeetsZeroOrNg);
     Or(a=outMeetsPg, b=outMeetsZeroOrNg, out=loadToPC);
-    PC(in=outA, load=loadToPC, inc=true, reset=reset, out=pc);
+    PC(in=outA, load=loadToPC, inc=true, reset=reset, out[0..14]=pc);
 }
