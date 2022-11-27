@@ -66,8 +66,8 @@ D=A
 M=D
 ```
 
-## 不具合：Windows 11にてHardwareSimulatorの実行結果の欄が表示されない
-Windows 11ではHardwareSimulatorを画面いっぱいに表示しても、テストの実行結果やエラーが表示される欄が表示されない。
+## 不具合：Windows 11にてディスプレイの大きさによってはHardwareSimulatorの実行結果の欄が表示されない
+Windows 11ではディスプレイの縦の長さが約8cm未満だと、HardwareSimulatorを画面いっぱいに表示しても、テストの実行結果やエラーが表示される欄が表示されない。
 
 <img width="728" alt="nand2tetris-win-bug" src="https://user-images.githubusercontent.com/90051826/185859924-8bb1b008-f5ce-45db-aa17-c40a00885c8f.png">
 
@@ -75,4 +75,4 @@ Windows 11ではHardwareSimulatorを画面いっぱいに表示しても、テ�
 
 <img width="729" alt="nand2tetris-bug-linux" src="https://user-images.githubusercontent.com/90051826/185860088-bf500e86-8b25-4133-ada8-022ae2cc2350.png">
 
-対応策は仮想マシンや実機などにLinuxを入れてそこでnand2tetrisをやるか、[公式サイト](https://www.nand2tetris.org/software)でソースコードが公開されているのでそれを自力で修正するかだと思う。
+対応策は仮想マシンや実機などにLinuxを入れてそこでnand2tetrisをやるか、ディスプレイの縦の長さが8cm以上のモニタを用意しそのモニタにHardwareSimulatorを表示させるか、[公式サイト](https://www.nand2tetris.org/software)でソースコードが公開されているのでそれを自力で修正するかだと思う。
