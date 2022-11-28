@@ -7,16 +7,16 @@ class Parser:
         def __init__(self) -> None:
             self.type: str = ""
             self.symbol: str = ""
-            self.dest: str = ""
+            self.dest: str = "null"
             self.comp: str = ""
-            self.jump: str = ""
+            self.jump: str = "null"
         
         def clear(self) -> None:
             self.type: str = ""
             self.symbol: str = ""
-            self.dest: str = ""
+            self.dest: str = "null"
             self.comp: str = ""
-            self.jump: str = ""
+            self.jump: str = "null"
 
     def __init__(self, path_to_asm_file: str) -> None:
         self.__asm_file: TextIOWrapper = open(file=path_to_asm_file, mode="r") # アセンブリのファイル
