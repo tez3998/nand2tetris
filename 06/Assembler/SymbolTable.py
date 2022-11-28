@@ -1,12 +1,16 @@
 class SymbolTable:
     def __init__(self) -> None:
-        pass
+        # シンボルテーブル
+        self.__table: dict[str, int] = {}
 
     def addEntry(self, symbol: str, address: int) -> None:
-        pass
+        self.__table[symbol] = address
 
     def contains(self, symbol: str) -> bool:
-        pass
+        if self.__table.get(symbol) == None:
+            return False
+        else:
+            return True
 
     def getAddress(self, symbol: str) -> int:
-        pass
+        return self.__table[symbol]
