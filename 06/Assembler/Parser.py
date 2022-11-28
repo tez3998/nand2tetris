@@ -83,6 +83,9 @@ class Parser:
         else:
             self.__analyze_c_commamd()
 
+    def returnToBeginning(self) -> None:
+        self.__asm_file.seek(0)
+
     def hasMoreCommands(self) -> bool:
         for line in self.__asm_file:
             line = self.__remove_comment(line=line)

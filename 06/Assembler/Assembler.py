@@ -11,14 +11,24 @@ class Assembler:
         self.__output_file: TextIOWrapper = open(file=output_file_name, mode="w")
         self.__parser: Parser = Parser(path_to_asm_file=path_to_asm_file)
         self.__code: Code = Code()
-        #self.__symbol_table: SymbolTable = SymbolTable()
+        self.__symbol_table: SymbolTable = SymbolTable()
         self.__command_type: CommandType = CommandType()
+        self.__rom_address_index: int = 0
+        self.__ram_address_index: int = 16
     
     def __del__(self) -> None:
         self.__output_file.close()
     
     def __assemble_a_command(self) -> str:
-        value_str_decimal: str = self.__parser.symbol()
+        value: str = self.__parser.symbol()
+        value_str_decimal: str = ""
+        if not str.isdecimal(value):
+            if not self.__symbol_table.contains(symbol=value):
+                self.__symbol_table.addEntry(symbol=value, address=self.__ram_address_index)
+                self.__ram_address_index += 1
+            value_str_decimal = self.__symbol_table.getAddress(symbol=value)
+        else:
+            value_str_decimal = value
         value_int: int = int(value_str_decimal)
         value_str_binary: str = format(value_int, "015b") # 15桁の2進数文字列
         
@@ -36,6 +46,19 @@ class Assembler:
         return "111" + comp_binary + dest_binary + jump_binary
 
     def assemble(self) -> None:
+        # L命令をそのL命令に続く命令のアドレスに対応づけていく
+        while self.__parser.hasMoreCommands():
+            self.__parser.advance()
+            current_command_type: str = self.__parser.commandType()
+            if not (current_command_type == self.__command_type.l):
+                self.__rom_address_index += 1
+                continue
+            symbol: str = self.__parser.symbol()
+            self.__symbol_table.addEntry(symbol=symbol, address=self.__rom_address_index)
+
+        self.__parser.returnToBeginning()
+
+        # 命令をバイナリに変換していく
         while self.__parser.hasMoreCommands():
             self.__parser.advance()
             binary_command: str = ""
@@ -44,6 +67,8 @@ class Assembler:
                 binary_command = self.__assemble_a_command()
             elif current_command_type == self.__command_type.c:
                 binary_command = self.__assemble_c_command()
+            else:
+                continue
             self.__output_file.write(binary_command + "\n")
 
 if __name__ == "__main__":
