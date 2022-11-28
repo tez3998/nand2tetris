@@ -84,15 +84,14 @@ class Parser:
             self.__analyze_c_commamd()
 
     def hasMoreCommands(self) -> bool:
-        line: str = self.__asm_file.readline()
-        line = self.__remove_comment(line=line)
-        line = self.__remove_tab(line=line)
+        for line in self.__asm_file:
+            line = self.__remove_comment(line=line)
+            line = self.__remove_tab(line=line)
 
-        if len(line) > 0:
-            self.__current_line = line # 後のadvanceで使うので保持しておく
-            return True
-        else:
-            return False
+            if len(line) > 0:
+                self.__current_line = line # 後のadvanceで使うので保持しておく
+                return True
+        return False
 
     def advance(self) -> None:
         self.__current_command.clear()
