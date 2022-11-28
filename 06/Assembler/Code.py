@@ -1,7 +1,7 @@
 class Code:
     def __init__(self) -> None:
         # destのニーモニックとビットの対応表
-        self.__dest_table = {
+        self.__dest_table: dict[str, str] = {
             "null": "000",
             "M": "001",
             "D": "010",
@@ -13,7 +13,7 @@ class Code:
         }
 
         # compのニーモニックとビットの対応表
-        self.__comp_table = {
+        self.__comp_table: dict[str, str] = {
             "0": "0101010", # 以下、a=0のとき
             "1": "0111111",
             "-1": "0111010",
@@ -45,7 +45,7 @@ class Code:
         }
 
         # jumpのニーモニックとビットの対応表
-        self.__jump_table = {
+        self.__jump_table: dict[str, str] = {
             "null": "000",
             "JGT": "001",
             "JEQ": "010",
