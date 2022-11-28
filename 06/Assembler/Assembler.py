@@ -37,13 +37,14 @@ class Assembler:
 
     def assemble(self) -> None:
         while self.__parser.hasMoreCommands():
+            self.__parser.advance()
             binary_command: str = ""
             current_command_type: str = self.__parser.commandType()
             if current_command_type == self.__command_type.a:
                 binary_command = self.__assemble_a_command()
             elif current_command_type == self.__command_type.c:
                 binary_command = self.__assemble_c_command()
-            self.__output_file.write(binary_command)
+            self.__output_file.write(binary_command + "\n")
 
 if __name__ == "__main__":
     path_to_asm_file = sys.argv[1] # 入力ファイルまでのパス
