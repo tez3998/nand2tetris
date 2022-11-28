@@ -48,3 +48,6 @@ class Assembler:
 if __name__ == "__main__":
     path_to_asm_file = sys.argv[1] # 入力ファイルまでのパス
     output_file_name = sys.argv[2] # 出力ファイルの名前
+
+    assembler: Assembler = Assembler(path_to_asm_file=path_to_asm_file, output_file_name=output_file_name)
+    assembler.assemble()
