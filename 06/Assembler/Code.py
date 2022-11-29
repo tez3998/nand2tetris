@@ -57,10 +57,22 @@ class Code:
         }
 
     def dest(self, mnemonic: str) -> str:
+        """
+        mnemonicはdest部分のニーモニック。
+        ニーモニックに対応した3bitのバイナリ文字列を返す。
+        """
         return self.__dest_table[mnemonic]
 
     def comp(self, mnemonic: str) -> str:
+        """
+        mnemonicはcomp部分のニーモニック。
+        ニーモニックに対応した7bitのバイナリ文字列を返す。
+        """
         return self.__comp_table[mnemonic]
 
     def jump(self, mnemonic: str) -> str:
+        """
+        mnemonicはjump部分のニーモニック。
+        ニーモニックに対応した3bitのバイナリ文字列を返す。
+        """
         return self.__jump_table[mnemonic]

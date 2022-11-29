@@ -8,18 +8,25 @@ import sys
 
 class Assembler:
     def __init__(self, path_to_asm_file: str, output_file_name: str) -> None:
-        self.__output_file: TextIOWrapper = open(file=output_file_name, mode="w")
+        """
+        path_to_asm_fileはアセンブルする.asmファイルまでのパス。
+        output_file_nameは出力される.hackファイルの名前。
+        """
+        self.__output_file: TextIOWrapper = open(file=output_file_name, mode="w") # 出力されるファイル
         self.__parser: Parser = Parser(path_to_asm_file=path_to_asm_file)
         self.__code: Code = Code()
         self.__symbol_table: SymbolTable = SymbolTable()
         self.__command_type: CommandType = CommandType()
-        self.__rom_address_index: int = 0
-        self.__ram_address_index: int = 16
+        self.__rom_address_index: int = 0 # ROMのアドレスのインデックス。L命令をROMのアドレスに置き換えるときに使われる
+        self.__ram_address_index: int = 16 # RAMのアドレスのインデックス。変数をRAMのアドレスに置き換えるときに使われる。
     
     def __del__(self) -> None:
         self.__output_file.close()
     
     def __assemble_a_command(self) -> str:
+        """
+        A命令をアセンブルした16bitのバイナリ文字列を返す。
+        """
         value: str = self.__parser.symbol()
         value_str_decimal: str = ""
         if not str.isdecimal(value):
@@ -35,6 +42,9 @@ class Assembler:
         return "0" + value_str_binary
 
     def __assemble_c_command(self) -> str:
+        """
+        C命令をアセンブルした16bitのバイナリ文字列を返す。
+        """
         comp = self.__parser.comp()
         dest = self.__parser.dest()
         jump = self.__parser.jump()

@@ -28,13 +28,25 @@ class SymbolTable:
         }
 
     def addEntry(self, symbol: str, address: int) -> None:
+        """
+        symbolはA命令やL命令のシンボル。
+        addressはROMまたはRAMのアドレス。
+        """
         self.__table[symbol] = address
 
     def contains(self, symbol: str) -> bool:
+        """
+        symbolはA命令またはL命令のシンボル。
+        symbolがシンボルテーブルに登録されていればTrueを返し、されていなければFalseを返す。
+        """
         if self.__table.get(symbol) == None:
             return False
         else:
             return True
 
     def getAddress(self, symbol: str) -> int:
+        """
+        symbolはA命令またはL命令のシンボル。
+        symbolに対応したROMまたはRAMのアドレスを返す。
+        """
         return self.__table[symbol]
