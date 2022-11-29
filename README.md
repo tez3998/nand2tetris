@@ -8,11 +8,12 @@
 プロジェクト7：バーチャルマシン\#1：スタック操作
 
 # 躓いたところ
-## エラー：',', or ')' are expected
+## エラー
+### ',', or ')' are expected
 ピンの名前に_を使うとこのエラーが発生する。
 そのため、ピンの名前には英数字のみを使用する。
 
-## エラー：Sub bus of an internal node may not be used
+### Sub bus of an internal node may not be used
 プロジェクト2のALUを実装するときに発生した。
 
 やりたかったことは、Or8Way(in[8], out)という部品に、ALUの入力バス（INの後で定義されるバス）でない内部バスintenal[16]の前半部分と後半部分を2つのOr8Wayのinに分けて入れる、ということだった。
@@ -42,7 +43,7 @@ Or16Way(in=internal, out=out0)
 この場合、inはOr16Way内では入力バスなので、in=a[0..7]のようなinの右辺に[　]を使う記述をしてもエラーは発生しない。
 詳細はプロジェクト2のALU.hdlを参照する。
 
-## エラー：Expression expected
+### Expression expected
 プロジェクト4のFill.asmを実装するところで発生した。
 
 Mに直接0、1、-1以外の数字を代入しようとすると発生する。
@@ -61,7 +62,8 @@ D=A
 M=D
 ```
 
-## 不具合：Windows 11にてディスプレイの大きさによってはHardwareSimulatorの実行結果の欄が表示されない
+## 不具合
+### Windows 11にてディスプレイの大きさによってはHardwareSimulatorの実行結果の欄が表示されない
 Windows 11ではディスプレイの縦の長さが約8cm未満だと、HardwareSimulatorを画面いっぱいに表示しても、テストの実行結果やエラーが表示される欄が表示されない。
 
 <img width="728" alt="nand2tetris-win-bug" src="https://user-images.githubusercontent.com/90051826/185859924-8bb1b008-f5ce-45db-aa17-c40a00885c8f.png">
