@@ -31,6 +31,10 @@ class Parser:
     def __remove_tab(self, line: str) -> str:
         return line.strip()
 
+    
+    def __remove_newline_char_at_end(self, line: str):
+        return line.rstrip("\n")
+
 
     def __determine_command_type(self) -> None:
         chunk: str = ""
@@ -45,6 +49,11 @@ class Parser:
         # 本当はちゃんと算術命令になっているか確認するかをここで確認する必要がある
         self.__current_vm_command.type = self.__command_type.c_arithmetic
 
+
+    def __analyze_arithmetic_command(self) -> None:
+        line = self.__current_line
+        line = self.__remove_tab(line=line)
+        self.__current_vm_command.arg1 = self.__remove_newline_char_at_end(line=line)
 
     def __analyze_2_args_command(self, command_name: str) -> None:
         chunk: str = ""
@@ -63,6 +72,8 @@ class Parser:
             self.__analyze_2_args_command(command_name="push")
         elif self.__current_vm_command.type == self.__command_type.c_pop:
             self.__analyze_2_args_command(command_name="pop")
+        else:
+            self.__analyze_arithmetic_command()
 
 
     def hasMoreCommands(self) -> bool:
