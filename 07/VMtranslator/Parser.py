@@ -59,8 +59,11 @@ class Parser:
         chunk: str = ""
         for char in self.__current_line[len(command_name)+1:]:
             if char.isspace():
-                self.__current_vm_command.arg1 = chunk
-                chunk = ""
+                if self.__current_vm_command.arg1 == "":
+                    self.__current_vm_command.arg1 = chunk
+                    chunk = ""
+                else:
+                    break
             else:
                 chunk = chunk + char
         self.__current_vm_command.arg2 = int(self.__remove_newline_char_at_end(line=chunk))
