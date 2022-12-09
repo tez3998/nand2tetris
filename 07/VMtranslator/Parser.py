@@ -63,7 +63,7 @@ class Parser:
                 chunk = ""
             else:
                 chunk = chunk + char
-        self.__current_vm_command.arg2 = int(chunk.rstrip("\n"))
+        self.__current_vm_command.arg2 = int(self.__remove_newline_char_at_end(line=chunk))
 
 
     def __analyze_command(self) -> None:
