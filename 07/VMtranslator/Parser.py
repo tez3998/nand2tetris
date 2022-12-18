@@ -62,6 +62,9 @@ class Parser:
                 if self.__current_vm_command.arg1 == "":
                     self.__current_vm_command.arg1 = chunk
                     chunk = ""
+                elif chunk == "":
+                    # 1つ以上の空白に対応
+                    continue
                 else:
                     break
             else:
