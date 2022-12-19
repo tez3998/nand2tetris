@@ -21,6 +21,10 @@ class Parser:
         self.__current_vm_command: Parser.VMCommand = Parser.VMCommand()
         self.__current_line: str = ""
         self.__command_type: CommandType = CommandType()
+    
+
+    def __del__(self):
+        self.__file.close()
 
 
     def __remove_comment(self, line: str) -> str:
