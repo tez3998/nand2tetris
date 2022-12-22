@@ -1,3 +1,4 @@
+import re
 from io import TextIOWrapper
 
 class CodeWriter:
@@ -23,7 +24,7 @@ class CodeWriter:
 
 
     def __init__(self, output_file_name: str) -> None:
-        self.__file_name = ""
+        self.__file_name = "" # .vmファイルの名前から最後の".vm"を除いた部分
         self.__output_file: TextIOWrapper = open(file=output_file_name, mode="w") # 出力するアセンブリファイル
         self.__asm_commands: CodeWriter.Asm_Command = CodeWriter.Asm_Command()
         self.__symbol_index: int = 0 # ジャンプ命令の時に使うシンボルをアセンブリファイル中で一意にするためのインデックス。新しいシンボルを生成する毎に1ずつインクリメントさせる
@@ -117,7 +118,8 @@ class CodeWriter:
 
 
     def setFileName(self, filename: str) -> None:
-        self.__file_name = filename
+        file_extension_pattern: str = ".vm"
+        self.__file_name = re.sub(pattern=file_extension_pattern, repl="", string=filename)
 
 
     # TODO: 2変数の演算など同じところは関数にまとめる
@@ -143,19 +145,68 @@ class CodeWriter:
 
 
     def writePushPop(self, command: str, segment: str, index: int) -> None:
-        if segment == "local":
-            pass
-        elif segment == "argument":
-            pass
-        elif segment == "this":
-            pass
-        elif segment == "that":
-            pass
-        elif segment == "pointer":
-            pass
-        elif segment == "temp":
-            pass
-        elif segment == "constant":
-            pass
-        elif segment == "static":
-            pass
+        if command == "push":
+            if segment == "local":
+                self.__asm_commands.append("@LCL\n",
+                                            "D=A\n",
+                                            f"@{index}\n",
+                                            "A=D+A\n",
+                                            "D=M\n")
+            elif segment == "argument":
+                self.__asm_commands.append("@ARG\n",
+                                            "D=A\n",
+                                            f"@{index}\n",
+                                            "A=D+A\n",
+                                            "D=M\n")
+            elif segment == "this":
+                self.__asm_commands.append("@THIS\n",
+                                            "D=A\n",
+                                            f"@{index}\n",
+                                            "A=D+A\n",
+                                            "D=M\n")
+            elif segment == "that":
+                self.__asm_commands.append("@THAT\n",
+                                            "D=A\n",
+                                            f"@{index}\n",
+                                            "A=D+A\n",
+                                            "D=M\n")
+            elif segment == "pointer":
+                self.__asm_commands.append("@3\n",
+                                            "D=A\n",
+                                            f"@{index}\n",
+                                            "A=D+A\n",
+                                            "D=M\n")
+            elif segment == "temp":
+                self.__asm_commands.append("@6\n",
+                                            "D=A\n",
+                                            f"@{index}\n",
+                                            "A=D+A\n",
+                                            "D=M\n")
+            elif segment == "constant":
+                self.__asm_commands.append(f"D={index}\n")
+            elif segment == "static":
+                self.__asm_commands.append(f"@{self.__file_name}.f{index}\n",
+                                            "D=A\n",
+                                            f"@{index}\n",
+                                            "A=D+A\n",
+                                            "D=M\n")
+            self.__push()
+        elif command == "pop":
+            self.__pop()
+            if segment == "local":
+                pass
+            elif segment == "argument":
+                pass
+            elif segment == "this":
+                pass
+            elif segment == "that":
+                pass
+            elif segment == "pointer":
+                pass
+            elif segment == "temp":
+                pass
+            elif segment == "constant":
+                pass
+            elif segment == "static":
+                pass
+        self.__write_asm_command()
