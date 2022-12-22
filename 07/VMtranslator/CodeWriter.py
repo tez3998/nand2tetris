@@ -16,7 +16,7 @@ class CodeWriter:
 
         def append(self, *commands: str):
             for cmd in commands:
-                self.__commands += cmd
+                self.__commands += cmd + "\n"
         
 
         def get_commands(self) -> str:
@@ -40,23 +40,23 @@ class CodeWriter:
 
 
     def __increase_sp(self) -> None:
-        self.__asm_commands.append("@SP\n",
-                                    "D=A\n",
-                                    "M=D+1\n")
+        self.__asm_commands.append("@SP",
+                                    "D=A",
+                                    "M=D+1")
 
 
     def __decrease_sp(self) -> None:
-        self.__asm_commands.append("@SP\n",
-                                    "D=A\n",
-                                    "M=D-1\n")
+        self.__asm_commands.append("@SP",
+                                    "D=A",
+                                    "M=D-1")
     
 
     def __push(self) -> None:
         """
         値をレジスタDからスタックにpushする
         """
-        self.__asm_commands.append("@SP\n",
-                                    "M=D\n")
+        self.__asm_commands.append("@SP",
+                                    "M=D")
         self.__increase_sp()
 
 
@@ -65,8 +65,8 @@ class CodeWriter:
         値をスタックからレジスタDにpopする
         """
         self.__decrease_sp()
-        self.__asm_commands.append("@SP\n",
-                                    "D=M\n")
+        self.__asm_commands.append("@SP",
+                                    "D=M")
     
 
     def __write_1_args_default_arithmetic(self, operator: str) -> None:
@@ -74,7 +74,7 @@ class CodeWriter:
         Hackアセンブリ言語にデフォルトである、1変数関数を出力ファイルに書き込む
         """
         self.__pop()
-        self.__asm_commands.append(f"D={operator}D\n")
+        self.__asm_commands.append(f"D={operator}D")
         self.__push()
         self.__write_asm_command()
 
@@ -84,11 +84,11 @@ class CodeWriter:
         Hackアセンブリ言語にデフォルトである、2変数関数を出力ファイルに書き込む
         """
         self.__pop()
-        self.__asm_commands.append("@R13\n",
-                                    "M=D\n")
+        self.__asm_commands.append("@R13",
+                                    "M=D")
         self.__pop()
-        self.__asm_commands.append("@R13\n",
-                                    f"D=D{operator}M\n")
+        self.__asm_commands.append("@R13",
+                                    f"D=D{operator}M")
         self.__push()
         self.__write_asm_command()
     
@@ -98,20 +98,20 @@ class CodeWriter:
         symbol_end: str = "END" + str(self.__symbol_index)
 
         self.__pop()
-        self.__asm_commands.append("@R13\n",
-                                    "M=D\n")
+        self.__asm_commands.append("@R13",
+                                    "M=D")
         self.__pop()
-        self.__asm_commands.append("D=D-M\n",
-                                    f"@{symbol_true}\n",
-                                    f"D;{jump_command}\n",
-                                    "D=0\n")
+        self.__asm_commands.append("D=D-M",
+                                    f"@{symbol_true}",
+                                    f"D;{jump_command}",
+                                    "D=0")
         self.__push()
-        self.__asm_commands.append(f"@{symbol_end}\n",
-                                    "0;JMP\n",
-                                    f"({symbol_true})\n",
-                                    "D=-1\n")
+        self.__asm_commands.append(f"@{symbol_end}",
+                                    "0;JMP",
+                                    f"({symbol_true})",
+                                    "D=-1")
         self.__push()
-        self.__asm_commands.append(f"({symbol_end})\n")
+        self.__asm_commands.append(f"({symbol_end})")
         self.__write_asm_command()
 
         self.__symbol_index += 1
@@ -147,49 +147,49 @@ class CodeWriter:
     def writePushPop(self, command: str, segment: str, index: int) -> None:
         if command == "push":
             if segment == "local":
-                self.__asm_commands.append("@LCL\n",
-                                            "D=A\n",
-                                            f"@{index}\n",
-                                            "A=D+A\n",
-                                            "D=M\n")
+                self.__asm_commands.append("@LCL",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "D=M")
             elif segment == "argument":
-                self.__asm_commands.append("@ARG\n",
-                                            "D=A\n",
-                                            f"@{index}\n",
-                                            "A=D+A\n",
-                                            "D=M\n")
+                self.__asm_commands.append("@ARG",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "D=M")
             elif segment == "this":
-                self.__asm_commands.append("@THIS\n",
-                                            "D=A\n",
-                                            f"@{index}\n",
-                                            "A=D+A\n",
-                                            "D=M\n")
+                self.__asm_commands.append("@THIS",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "D=M")
             elif segment == "that":
-                self.__asm_commands.append("@THAT\n",
-                                            "D=A\n",
-                                            f"@{index}\n",
-                                            "A=D+A\n",
-                                            "D=M\n")
+                self.__asm_commands.append("@THAT",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "D=M")
             elif segment == "pointer":
-                self.__asm_commands.append("@3\n",
-                                            "D=A\n",
-                                            f"@{index}\n",
-                                            "A=D+A\n",
-                                            "D=M\n")
+                self.__asm_commands.append("@3",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "D=M")
             elif segment == "temp":
-                self.__asm_commands.append("@6\n",
-                                            "D=A\n",
-                                            f"@{index}\n",
-                                            "A=D+A\n",
-                                            "D=M\n")
+                self.__asm_commands.append("@6",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "D=M")
             elif segment == "constant":
-                self.__asm_commands.append(f"D={index}\n")
+                self.__asm_commands.append(f"D={index}")
             elif segment == "static":
-                self.__asm_commands.append(f"@{self.__file_name}.f{index}\n",
-                                            "D=A\n",
-                                            f"@{index}\n",
-                                            "A=D+A\n",
-                                            "D=M\n")
+                self.__asm_commands.append(f"@{self.__file_name}.f{index}",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "D=M")
             self.__push()
         elif command == "pop":
             self.__pop()
