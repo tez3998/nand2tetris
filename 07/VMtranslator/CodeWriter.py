@@ -186,9 +186,6 @@ class CodeWriter:
                 self.__asm_commands.append(f"D={index}")
             elif segment == "static":
                 self.__asm_commands.append(f"@{self.__file_name}.f{index}",
-                                            "D=A",
-                                            f"@{index}",
-                                            "A=D+A",
                                             "D=M")
             self.__push()
         elif command == "pop":
