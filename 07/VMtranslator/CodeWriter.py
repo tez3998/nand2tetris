@@ -194,19 +194,44 @@ class CodeWriter:
         elif command == "pop":
             self.__pop()
             if segment == "local":
-                pass
+                self.__asm_commands.append("@LCL",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "M=D")
             elif segment == "argument":
-                pass
+                self.__asm_commands.append("@ARG",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "M=D")
             elif segment == "this":
-                pass
+                self.__asm_commands.append("@THIS",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "M=D")
             elif segment == "that":
-                pass
+                self.__asm_commands.append("@THAT",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "M=D")
             elif segment == "pointer":
-                pass
+                self.__asm_commands.append("@3",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "M=D")
             elif segment == "temp":
-                pass
+                self.__asm_commands.append("@6",
+                                            "D=A",
+                                            f"@{index}",
+                                            "A=D+A",
+                                            "M=D")
             elif segment == "constant":
-                pass
+                pass # constantでpushは多分ないと思う
             elif segment == "static":
-                pass
+                self.__asm_commands.append(f"@{self.__file_name}.f{index}",
+                                            "M=D")
         self.__write_asm_command()
