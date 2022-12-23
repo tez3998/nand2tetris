@@ -33,6 +33,7 @@ if __name__ == "__main__":
 
     # アセンブリの生成
     code_writer: CodeWriter = CodeWriter(output_file_name=output_file_name)
+    code_writer.initSP()
     command_type: CommandType = CommandType()
 
     for input_file in input_files:

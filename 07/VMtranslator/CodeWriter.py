@@ -117,6 +117,16 @@ class CodeWriter:
         self.__symbol_index += 1
 
 
+    def initSP(self) -> None:
+        """
+        SPに初期値を設定する。
+        """
+        self.__asm_commands.append("@256",
+                                    "D=A",
+                                    "@SP",
+                                    "M=D")
+
+
     def setFileName(self, filename: str) -> None:
         file_extension_pattern: str = ".vm"
         self.__file_name = re.sub(pattern=file_extension_pattern, repl="", string=filename)
