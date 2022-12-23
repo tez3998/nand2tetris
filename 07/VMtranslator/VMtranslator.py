@@ -38,7 +38,7 @@ if __name__ == "__main__":
     for input_file in input_files:
         parser: Parser = Parser(path_to_file=input_file)
         vm_file_name: str = get_final_path_name(path=input_file)
-        code_writer.setFileName(filename=re.sub(pattern=".vm$", repl="", string=vm_file_name))
+        code_writer.setFileName(filename=vm_file_name)
         while parser.hasMoreCommands():
             parser.advance()
             cmd_type: str = parser.commandType()
