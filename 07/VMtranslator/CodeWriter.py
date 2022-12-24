@@ -31,7 +31,7 @@ class CodeWriter:
     
 
     def __del__(self):
-        self.__output_file.close()    
+        self.__output_file.close()
     
     
     def __write_asm_command(self):
