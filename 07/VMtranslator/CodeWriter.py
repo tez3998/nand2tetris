@@ -29,6 +29,10 @@ class CodeWriter:
         self.__asm_commands: CodeWriter.Asm_Command = CodeWriter.Asm_Command()
         self.__symbol_index: int = 0 # ジャンプ命令の時に使うシンボルをアセンブリファイル中で一意にするためのインデックス。新しいシンボルを生成する毎に1ずつインクリメントさせる
     
+
+    def __del__(self):
+        self.__output_file.close()    
+    
     
     def __write_asm_command(self):
         """
@@ -41,14 +45,12 @@ class CodeWriter:
 
     def __increase_sp(self) -> None:
         self.__asm_commands.append("@SP",
-                                    "D=A",
-                                    "M=D+1")
+                                    "M=M+1")
 
 
     def __decrease_sp(self) -> None:
         self.__asm_commands.append("@SP",
-                                    "D=A",
-                                    "M=D-1")
+                                    "M=M-1")
     
 
     def __push(self) -> None:
@@ -56,6 +58,7 @@ class CodeWriter:
         値をレジスタDからスタックにpushする
         """
         self.__asm_commands.append("@SP",
+                                    "A=M",
                                     "M=D")
         self.__increase_sp()
 
@@ -66,6 +69,7 @@ class CodeWriter:
         """
         self.__decrease_sp()
         self.__asm_commands.append("@SP",
+                                    "A=M",
                                     "D=M")
     
 
@@ -125,6 +129,17 @@ class CodeWriter:
                                     "D=A",
                                     "@SP",
                                     "M=D")
+        self.__write_asm_command()
+
+
+    def finishWriting(self) -> None:
+        """
+        アセンブリの終了を示す無限ループを追加する
+        """
+        self.__asm_commands.append("(END)",
+                                    "@END",
+                                    "0;JMP")
+        self.__write_asm_command()
 
 
     def setFileName(self, filename: str) -> None:
@@ -193,7 +208,8 @@ class CodeWriter:
                                             "A=D+A",
                                             "D=M")
             elif segment == "constant":
-                self.__asm_commands.append(f"D={index}")
+                self.__asm_commands.append(f"@{index}",
+                                            "D=A")
             elif segment == "static":
                 self.__asm_commands.append(f"@{self.__file_name}.f{index}",
                                             "D=M")
