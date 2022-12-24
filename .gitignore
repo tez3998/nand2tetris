@@ -1,2 +1,4 @@
 06/Assembler/__pycache__
 06/Assembler/*.hack
+07/VMtranslator/__pycache__
+07/VMtranslator/*.asm
