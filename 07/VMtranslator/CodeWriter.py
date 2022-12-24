@@ -237,7 +237,7 @@ class CodeWriter:
                                             "A=D+A",
                                             "M=D")
             elif segment == "constant":
-                pass # constantでpushは多分ないと思う
+                pass # constantでpopは多分ないと思う
             elif segment == "static":
                 self.__asm_commands.append(f"@{self.__file_name}.f{index}",
                                             "M=D")
