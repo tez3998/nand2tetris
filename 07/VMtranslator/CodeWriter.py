@@ -55,7 +55,7 @@ class CodeWriter:
                                     "M=M-1")
     
 
-    def __push(self) -> None:
+    def __push_to_stack(self) -> None:
         """
         値をレジスタDからスタックにpushする
         """
@@ -65,7 +65,7 @@ class CodeWriter:
         self.__increase_sp()
 
 
-    def __pop(self) -> None:
+    def __pop_from_stack(self) -> None:
         """
         値をスタックからレジスタDにpopする
         """
@@ -79,9 +79,9 @@ class CodeWriter:
         """
         Hackアセンブリ言語にデフォルトである、1変数関数を出力ファイルに書き込む
         """
-        self.__pop()
+        self.__pop_from_stack()
         self.__asm_commands.append(f"D={operator}D")
-        self.__push()
+        self.__push_to_stack()
         self.__write_asm_command()
 
 
@@ -89,13 +89,13 @@ class CodeWriter:
         """
         Hackアセンブリ言語にデフォルトである、2変数関数を出力ファイルに書き込む
         """
-        self.__pop()
+        self.__pop_from_stack()
         self.__asm_commands.append("@R13",
                                     "M=D")
-        self.__pop()
+        self.__pop_from_stack()
         self.__asm_commands.append("@R13",
                                     f"D=D{operator}M")
-        self.__push()
+        self.__push_to_stack()
         self.__write_asm_command()
     
 
@@ -103,21 +103,21 @@ class CodeWriter:
         symbol_true: str = "TRUE" + str(self.__symbol_index)
         symbol_end: str = "END" + str(self.__symbol_index)
 
-        self.__pop()
+        self.__pop_from_stack()
         self.__asm_commands.append("@R13",
                                     "M=D")
-        self.__pop()
+        self.__pop_from_stack()
         self.__asm_commands.append("@R13",
                                     "D=D-M",
                                     f"@{symbol_true}",
                                     f"D;{jump_command}",
                                     "D=0")
-        self.__push()
+        self.__push_to_stack()
         self.__asm_commands.append(f"@{symbol_end}",
                                     "0;JMP",
                                     f"({symbol_true})",
                                     "D=-1")
-        self.__push()
+        self.__push_to_stack()
         self.__asm_commands.append(f"({symbol_end})")
         self.__write_asm_command()
 
@@ -176,7 +176,7 @@ class CodeWriter:
         if command == "push":
             if segment == "local":
                 self.__asm_commands.append("@LCL",
-                                            "D=A",
+                                            "D=M",
                                             f"@{index}",
                                             "A=D+A",
                                             "D=M")
@@ -188,27 +188,23 @@ class CodeWriter:
                                             "D=M")
             elif segment == "this":
                 self.__asm_commands.append("@THIS",
-                                            "D=A",
+                                            "D=M",
                                             f"@{index}",
                                             "A=D+A",
                                             "D=M")
             elif segment == "that":
                 self.__asm_commands.append("@THAT",
-                                            "D=A",
+                                            "D=M",
                                             f"@{index}",
                                             "A=D+A",
                                             "D=M")
             elif segment == "pointer":
-                self.__asm_commands.append("@3",
-                                            "D=A",
-                                            f"@{index}",
-                                            "A=D+A",
+                address: int = 3 + index # 3はTHISのアドレス
+                self.__asm_commands.append(f"@{address}",
                                             "D=M")
             elif segment == "temp":
-                self.__asm_commands.append("@6",
-                                            "D=A",
-                                            f"@{index}",
-                                            "A=D+A",
+                address: int = 5 + index # 5はtempセグメントの最小のアドレス
+                self.__asm_commands.append(f"@{address}",
                                             "D=M")
             elif segment == "constant":
                 self.__asm_commands.append(f"@{index}",
@@ -216,44 +212,72 @@ class CodeWriter:
             elif segment == "static":
                 self.__asm_commands.append(f"@{self.__file_name}.f{index}",
                                             "D=M")
-            self.__push()
+            self.__push_to_stack()
         elif command == "pop":
-            self.__pop()
+            self.__pop_from_stack()
             if segment == "local":
-                self.__asm_commands.append("@LCL",
-                                            "D=A",
+                self.__asm_commands.append("@R13",
+                                            "M=D", # スタックから取り出してきた値をR13に退避
+                                            "@LCL",
+                                            "D=M",
                                             f"@{index}",
-                                            "A=D+A",
+                                            "D=D+A",
+                                            "@R14",
+                                            "M=D", # 操作対象のアドレスをR14に退避
+                                            "@R13",
+                                            "D=M",
+                                            "@R14",
+                                            "A=M",
                                             "M=D")
             elif segment == "argument":
-                self.__asm_commands.append("@ARG",
-                                            "D=A",
+                self.__asm_commands.append("@R13",
+                                            "M=D", # スタックから取り出してきた値をR13に退避
+                                            "@ARG",
+                                            "D=M",
                                             f"@{index}",
-                                            "A=D+A",
+                                            "D=D+A",
+                                            "@R14",
+                                            "M=D", # 操作対象のアドレスをR14に退避
+                                            "@R13",
+                                            "D=M",
+                                            "@R14",
+                                            "A=M",
                                             "M=D")
             elif segment == "this":
-                self.__asm_commands.append("@THIS",
-                                            "D=A",
+                self.__asm_commands.append("@R13",
+                                            "M=D", # スタックから取り出してきた値をR13に退避
+                                            "@THIS",
+                                            "D=M",
                                             f"@{index}",
-                                            "A=D+A",
+                                            "D=D+A",
+                                            "@R14",
+                                            "M=D", # 操作対象のアドレスをR14に退避
+                                            "@R13",
+                                            "D=M",
+                                            "@R14",
+                                            "A=M",
                                             "M=D")
             elif segment == "that":
-                self.__asm_commands.append("@THAT",
-                                            "D=A",
+                self.__asm_commands.append("@R13",
+                                            "M=D", # スタックから取り出してきた値をR13に退避
+                                            "@THAT",
+                                            "D=M",
                                             f"@{index}",
-                                            "A=D+A",
+                                            "D=D+A",
+                                            "@R14",
+                                            "M=D", # 操作対象のアドレスをR14に退避
+                                            "@R13",
+                                            "D=M",
+                                            "@R14",
+                                            "A=M",
                                             "M=D")
             elif segment == "pointer":
-                self.__asm_commands.append("@3",
-                                            "D=A",
-                                            f"@{index}",
-                                            "A=D+A",
+                address: int = 3 + index # 3はTHISのアドレス
+                self.__asm_commands.append(f"@{address}",
                                             "M=D")
             elif segment == "temp":
-                self.__asm_commands.append("@6",
-                                            "D=A",
-                                            f"@{index}",
-                                            "A=D+A",
+                address: int = 5 + index # 5はtempセグメントの最小のアドレス
+                self.__asm_commands.append(f"@{address}",
                                             "M=D")
             elif segment == "constant":
                 pass # constantでpopは多分ないと思う
