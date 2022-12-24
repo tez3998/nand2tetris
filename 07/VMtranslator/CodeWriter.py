@@ -210,7 +210,7 @@ class CodeWriter:
                 self.__asm_commands.append(f"@{index}",
                                             "D=A")
             elif segment == "static":
-                self.__asm_commands.append(f"@{self.__file_name}.f{index}",
+                self.__asm_commands.append(f"@{self.__file_name}.{index}",
                                             "D=M")
             self.__push_to_stack()
         elif command == "pop":
@@ -282,6 +282,6 @@ class CodeWriter:
             elif segment == "constant":
                 pass # constantでpopは多分ないと思う
             elif segment == "static":
-                self.__asm_commands.append(f"@{self.__file_name}.f{index}",
+                self.__asm_commands.append(f"@{self.__file_name}.{index}",
                                             "M=D")
         self.__write_asm_command()
