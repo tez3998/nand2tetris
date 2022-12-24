@@ -16,6 +16,8 @@ class CodeWriter:
 
         def append(self, *commands: str):
             for cmd in commands:
+                if not re.match(pattern="^\(.*\)$", string=cmd): # アセンブリの読みやすさのために、疑似コマンド以外は字下げ
+                    cmd = "    " + cmd
                 self.__commands += cmd + "\n"
         
 
