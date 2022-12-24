@@ -107,7 +107,8 @@ class CodeWriter:
         self.__asm_commands.append("@R13",
                                     "M=D")
         self.__pop()
-        self.__asm_commands.append("D=D-M",
+        self.__asm_commands.append("@R13",
+                                    "D=D-M",
                                     f"@{symbol_true}",
                                     f"D;{jump_command}",
                                     "D=0")
