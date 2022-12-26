@@ -13,6 +13,7 @@ def get_final_path_name(path: str) -> str:
     return os.path.basename(p=os.path.normpath(path=path))
 
 
+# TODO: できたら処理を1つのクラスにまとめることで、メインルーチンをすっきりさせたい
 if __name__ == "__main__":
     path_to_file_or_dir: str = sys.argv[1] # VMファイルかVMファイルを含んだディレクトリまでのパス
     input_files: list[str] = []
@@ -31,7 +32,7 @@ if __name__ == "__main__":
         print("引数として、ファイルかディレクトリまでの有効なパスを指定してください\n")
         sys.exit(1)
 
-    # アセンブリの生成
+    # アセンブリの生成を開始
     code_writer: CodeWriter = CodeWriter(output_file_name=output_file_name)
     code_writer.initSP()
     command_type: CommandType = CommandType()
@@ -58,4 +59,5 @@ if __name__ == "__main__":
                 print("命令のタイプが不正です")
                 sys.exit(1)
     
+    # アセンブリの生成を終了
     code_writer.finishWriting()

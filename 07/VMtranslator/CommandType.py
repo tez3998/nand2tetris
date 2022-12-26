@@ -1,4 +1,7 @@
 class CommandType:
+    """
+    命令の種類を保持するクラス
+    """
     def __init__(self) -> None:
         self.c_arithmetic: str = "C_ARITHMETIC"
         self.c_push: str = "C_PUSH"

@@ -7,14 +7,21 @@ class CodeWriter:
         ファイルに書き込む一連のアセンブリコマンドを保持するクラス
         """
         def __init__(self) -> None:
-            self.__commands = ""
+            self.__commands = "" # 書き込み前の一連のアセンブリコマンド
         
 
         def clear(self) -> None:
+            """
+            保持していた一連のアセンブリコマンドを削除する
+            """
             self.__commands = ""
         
 
         def append(self, *commands: str):
+            """
+            保持するアセンブリコマンドを増やす。
+            *commandsはアセンブリコマンドのリスト
+            """
             for cmd in commands:
                 if not re.match(pattern="^\(.*\)$", string=cmd): # アセンブリの読みやすさのために、疑似コマンド以外は字下げ
                     cmd = "    " + cmd
@@ -22,13 +29,16 @@ class CodeWriter:
         
 
         def get_commands(self) -> str:
+            """
+            現在保持している一連のアセンブリコマンドを削除する
+            """
             return self.__commands
 
 
     def __init__(self, output_file_name: str) -> None:
         self.__file_name = "" # .vmファイルの名前から最後の".vm"を除いた部分
         self.__output_file: TextIOWrapper = open(file=output_file_name, mode="w") # 出力するアセンブリファイル
-        self.__asm_commands: CodeWriter.Asm_Command = CodeWriter.Asm_Command()
+        self.__asm_commands: CodeWriter.Asm_Command = CodeWriter.Asm_Command() # 一連のアセンブリコマンドを保持するためのオブジェクト
         self.__symbol_index: int = 0 # ジャンプ命令の時に使うシンボルをアセンブリファイル中で一意にするためのインデックス。新しいシンボルを生成する毎に1ずつインクリメントさせる
     
 
@@ -46,11 +56,17 @@ class CodeWriter:
 
 
     def __increase_sp(self) -> None:
+        """
+        スタックポインタを1だけ増加させる
+        """
         self.__asm_commands.append("@SP",
                                     "M=M+1")
 
 
     def __decrease_sp(self) -> None:
+        """
+        スタックポインタを1だけ減少させる
+        """
         self.__asm_commands.append("@SP",
                                     "M=M-1")
     
@@ -87,7 +103,8 @@ class CodeWriter:
 
     def __write_2_args_default_arithmetic(self, operator: str) -> None:
         """
-        Hackアセンブリ言語にデフォルトである、2変数関数を出力ファイルに書き込む
+        Hackアセンブリ言語にデフォルトである、2変数関数を出力ファイルに書き込む。
+        operatorは2変数関数の演算子。
         """
         self.__pop_from_stack()
         self.__asm_commands.append("@R13",
@@ -100,6 +117,11 @@ class CodeWriter:
     
 
     def __write_2_args_arithmetic(self, jump_command: str) -> None:
+        """
+        Hackアセンブリ言語にデフォルトでない、2変数関数を出力ファイルに書き込む。
+        jump_commnadはJEQのようなアセンブリ命令のjump領域に対応する。
+        jump_commandが真になるときはスタックに-1をプッシュし、偽になるときはスタックに0をプッシュする
+        """
         symbol_true: str = "TRUE" + str(self.__symbol_index)
         symbol_end: str = "END" + str(self.__symbol_index)
 
@@ -146,12 +168,19 @@ class CodeWriter:
 
 
     def setFileName(self, filename: str) -> None:
+        """
+        現在処理しているVMファイルの名前をCodeWriterに知らせる。
+        名前にはXxx.vmのように、.vmという拡張子が含まれていることの想定している
+        """
         file_extension_pattern: str = ".vm"
         self.__file_name = re.sub(pattern=file_extension_pattern, repl="", string=filename)
 
 
-    # TODO: 2変数の演算など同じところは関数にまとめる
     def writeArithmetic(self, command: str) -> None:
+        """
+        算術命令を出力ファイルに書き込む。
+        commandはaddなどのVM言語の算術命令に対応している。
+        """
         if command == "add":
             self.__write_2_args_default_arithmetic(operator="+")
         elif command == "sub":
@@ -172,7 +201,12 @@ class CodeWriter:
             self.__write_1_args_default_arithmetic(operator="!")
 
 
+    # TODO: 記述に重複がある部分は関数などにまとめる
     def writePushPop(self, command: str, segment: str, index: int) -> None:
+        """
+        push命令とpop命令を出力ファイルに書き込む。
+        commandはVM命令のpushまたはpopに、segmentはVMのメモリセグメントに、indexは各ベースアドレスからのアドレスに対応している。
+        """
         if command == "push":
             if segment == "local":
                 self.__asm_commands.append("@LCL",
