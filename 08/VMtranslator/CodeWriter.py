@@ -15,7 +15,7 @@ class CodeWriter:
         pass
 
 
-    def write_push_pop(self, command: int, segment: str, index: int) -> None:
+    def write_push_pop(self, command: str, segment: str, index: int) -> None:
         pass
 
 
