@@ -37,10 +37,11 @@ class Parser:
             line = self.__remove_space(line=line)
             line = self.__remove_newline_char_at_end(line=line)
             if len(line) == 0:
-                return False
+                continue
             else:
                 self.__current_line = line
                 return True
+        return False
 
 
     def advance(self) -> None:
@@ -153,7 +154,7 @@ class Parser:
 
     def __parse_2_args_command(self, command_name: str) -> None:
         chunk: str = ""
-        for char in self.__current_line[len(command_name+1):]:
+        for char in self.__current_line[len(command_name)+1:]:
             if char.isspace():
                 if self.__current_vm_command.arg1 == "":
                     self.__current_vm_command.arg1 = chunk

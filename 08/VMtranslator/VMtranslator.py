@@ -46,7 +46,7 @@ def main():
     for input_file in input_files:
         parser: Parser = Parser(path_to_input_file=input_file)
         input_file_name: str = get_final_path(path=input_file)
-        code_writer.set_file_name(file_name=input_file)
+        code_writer.set_file_name(file_name=input_file_name)
 
         while parser.has_more_commands():
             parser.advance()

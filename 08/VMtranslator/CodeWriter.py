@@ -47,7 +47,10 @@ class CodeWriter:
 
     def write_init(self) -> None:
         STACK_SEGMENT_ADDRESS: str = 256
-        self.__asm_commands.append(f"@{STACK_SEGMENT_ADDRESS}")
+        self.__asm_commands.append(f"@{STACK_SEGMENT_ADDRESS}",
+                                    "D=A",
+                                    "@SP",
+                                    "M=D")
 
 
     def write_arithmetic(self, command: str) -> None:
