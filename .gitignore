@@ -9,3 +9,6 @@
 # プロジェクト8
 08/VMtranslator/__pycache__
 08/VMtranslator/*.asm
+08/VMtranslator/*.tst
+08/VMtranslator/*.cmp
+08/VMtranslator/*.out
