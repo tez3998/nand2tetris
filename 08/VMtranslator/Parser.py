@@ -9,13 +9,13 @@ class Parser:
         def __init__(self) -> None:
             self.type: int = -1
             self.arg1: str = ""
-            self.arg2: str = ""
+            self.arg2: int = -1
         
 
         def clear(self) -> None:
             self.type: int = -1
             self.arg1: str = ""
-            self.arg2: str = ""
+            self.arg2: int = -1
 
 
     #
@@ -166,4 +166,4 @@ class Parser:
             else:
                 chunk += char
         # 本当は余計な文字列が続いていないかチェックする必要がある
-        self.__current_vm_command.arg2 = chunk
+        self.__current_vm_command.arg2 = int(chunk)

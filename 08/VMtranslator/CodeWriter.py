@@ -361,7 +361,7 @@ class CodeWriter:
         """
         self.__asm_commands.append(f"@{symbol}",
                                     "D=M",
-                                    f"{str(index)}",
+                                    f"@{str(index)}",
                                     "A=D+A",
                                     "D=M")
         self.__push_to_stack()
