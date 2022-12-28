@@ -1,4 +1,11 @@
+# プロジェクト6
 06/Assembler/__pycache__
 06/Assembler/*.hack
+
+# プロジェクト7
 07/VMtranslator/__pycache__
 07/VMtranslator/*.asm
+
+# プロジェクト8
+08/VMtranslator/__pycache__
+08/VMtranslator/*.asm
