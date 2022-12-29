@@ -141,7 +141,7 @@ class Parser:
 
     def __parse_1_args_command(self, command_name: str) -> None:
         chunk: str = ""
-        for char in self.__current_line[len(command_name+1):]:
+        for char in self.__current_line[len(command_name)+1:]:
             if char.isspace():
                 continue
             else:

@@ -29,20 +29,46 @@ class CodeWriter:
             self.__commands = ""
 
 
+    class FunctionNameManager:
+        """
+        関数の名前を管理するクラス
+        """
+        def __init__(self) -> None:
+            self.__function_names: list[str] = []
+
+
+        def enter(self, function_name: str) -> None:
+            self.__function_names.append(function_name)
+
+        
+        def exit(self) -> None:
+            self.__function_names.pop()
+        
+
+        def get_function_name(self) -> str:
+            num_function_names: int = len(self.__function_names)
+
+            if num_function_names == 0:
+                return ""
+            else:
+                return self.__function_names[num_function_names - 1]
+
+
     #
     # パブリックメソッド
     #
     def __init__(self, output_file_name: str) -> None:
         self.__output_file: TextIOWrapper = open(file=output_file_name, mode="w") # 出力されるアセンブリファイル
         self.__current_parsing_file_name: str = "" # 現在パースされているファイルの名前
-        self.__current_function_name: str = "" # 現在パースされている関数の名前
         self.__asm_commands: CodeWriter.AssemblyCommands = CodeWriter.AssemblyCommands() # 書き込み前の一連のアセンブリコマンド
+        self.__func_name_manager: CodeWriter.FunctionNameManager = CodeWriter.FunctionNameManager()
         self.__symbol_index: int = 0
         self.__return_address_index: int = 0
 
 
     def set_file_name(self, file_name: str) -> None:
         self.__current_parsing_file_name = file_name
+        self.__func_name_manager = CodeWriter.FunctionNameManager()
 
 
     def write_init(self) -> None:
@@ -51,6 +77,7 @@ class CodeWriter:
                                     "D=A",
                                     "@SP",
                                     "M=D")
+        self.__write()
 
 
     def write_arithmetic(self, command: str) -> None:
@@ -147,20 +174,24 @@ class CodeWriter:
 
 
     def write_label(self, label: str) -> None:
-        self.__asm_commands.append(f"({self.__current_function_name}${label})")
+        current_function_name: str = self.__func_name_manager.get_function_name()
+        self.__asm_commands.append(f"({current_function_name}${label})")
         self.__write()
 
 
     def write_goto(self, label: str) -> None:
-        self.__asm_commands.append(f"@{label}",
+        current_function_name: str = self.__func_name_manager.get_function_name()
+        self.__asm_commands.append(f"@{current_function_name}${label}",
                                     "0;JMP")
         self.__write()
 
 
     def write_if(self, label: str) -> None:
+        current_function_name: str = self.__func_name_manager.get_function_name()
+
         self.__pop_from_stack()
-        self.__asm_commands.append(f"@{label}",
-                                    "D;JEQ")
+        self.__asm_commands.append(f"@{current_function_name}${label}",
+                                    "D;JNE")
         self.__write()
 
 
@@ -233,6 +264,11 @@ class CodeWriter:
 
 
     def write_function(self, function_name: str, num_locals: int) -> None:
+        if self.__func_name_manager.get_function_name() != "":
+            self.__func_name_manager.exit()
+
+        self.__func_name_manager.enter(function_name=function_name)
+
         self.__asm_commands.append(f"({function_name})")
         for _ in range(num_locals):
             self.__asm_commands.append("D=0")
