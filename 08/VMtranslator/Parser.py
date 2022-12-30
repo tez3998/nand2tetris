@@ -49,7 +49,9 @@ class Parser:
         command_name: str = self.__determine_command_type()
 
         cmd_type: int = self.__current_vm_command.type
-        if cmd_type == Constant.C_ARITHMETIC:
+        if cmd_type == Constant.C_RETURN:
+            pass
+        elif cmd_type == Constant.C_ARITHMETIC:
             # 本当は余計な文字列が続いていないかチェックする必要がある
             self.__current_vm_command.arg1 = command_name
         elif cmd_type == Constant.C_LABEL or cmd_type == Constant.C_GOTO or cmd_type == Constant.C_IF:

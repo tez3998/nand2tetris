@@ -78,6 +78,7 @@ class CodeWriter:
                                     "@SP",
                                     "M=D")
         self.__write()
+        self.write_call(function_name="Sys.init", num_args=0)
 
 
     def write_arithmetic(self, command: str) -> None:
@@ -199,20 +200,24 @@ class CodeWriter:
         RETURN_ADDRESS: str = f"RETURN_ADDRESS_{str(self.__return_address_index)}"
         self.__return_address_index += 1
 
-        SYMBOLS: list[str] = [RETURN_ADDRESS, "LCL", "ARG", "THIS", "THAT"]
-        NUM_SAVED_STATE: int = len(SYMBOLS)
+        SYMBOLS: list[str] = ["LCL", "ARG", "THIS", "THAT"]
+        NUM_SAVED_STATE: int = 5
 
+        # リターンアドレスの保存
+        self.__asm_commands.append(f"@{RETURN_ADDRESS}",
+                                    "D=A")
+        self.__push_to_stack()
         # 呼び出し側の状態の保存
         for symbol in SYMBOLS:
-            self.__asm_commands.append(f"{symbol}",
+            self.__asm_commands.append(f"@{symbol}",
                                         "D=M")
             self.__push_to_stack()
         # ARGのセット
         self.__asm_commands.append("@SP",
                                     "D=M")
-        for _ in range(num_args + NUM_SAVED_STATE):
-            self.__asm_commands.append("D=D-1")
-        self.__asm_commands.append("@ARG",
+        self.__asm_commands.append(f"@{num_args + NUM_SAVED_STATE}",
+                                    "D=D-A",
+                                    "@ARG",
                                     "M=D")
         # LCLのセット
         self.__asm_commands.append("@SP",
@@ -231,33 +236,38 @@ class CodeWriter:
         SYMBOLS: list[str] = ["THAT", "THIS", "ARG", "LCL"]
         NUM_SAVED_STATE: int = 5
 
-        # LCLのセット
+        # 現在のLCLの値の退避
         self.__asm_commands.append("@LCL",
                                     "D=M",
                                     "@R13",
                                     "M=D")
         # リターンアドレスの退避
-        for _ in range(NUM_SAVED_STATE):
-            self.__asm_commands.append("D=D-1")
-        self.__asm_commands.append("@R14",
+        self.__asm_commands.append(f"@{NUM_SAVED_STATE}",
+                                    "A=D-A",
+                                    "D=M",
+                                    "@R14",
                                     "M=D")
         # 戻り値のセット
         self.__pop_from_stack()
         self.__asm_commands.append("@ARG",
+                                    "A=M",
                                     "M=D")
         # スタックポインタのセット
-        self.__asm_commands.append("D=D+1",
+        self.__asm_commands.append("@ARG",
+                                    "D=M+1",
                                     "@SP",
                                     "M=D")
         # 保存していた呼び出し側の状態の復元
-        self.__asm_commands.append("@LCL",
-                                    "D=M")
-        for symbol in SYMBOLS:
-            self.__asm_commands.append("D=D-1",
+        for index, symbol in enumerate(SYMBOLS):
+            self.__asm_commands.append("@R13",
+                                        "D=M",
+                                        f"@{index + 1}",
+                                        "A=D-A",
+                                        "D=M",
                                         f"@{symbol}",
                                         "M=D")
         # リターン
-        self.__asm_commands.append("@R13",
+        self.__asm_commands.append("@R14",
                                     "A=M",
                                     "0;JMP")
         self.__write()
@@ -274,18 +284,6 @@ class CodeWriter:
             self.__asm_commands.append("D=0")
             self.__push_to_stack()
         self.__write()
-
-
-    def write_infinite_loop(self) -> None:
-        """
-        アセンブリの終了を示す無限ループをファイルに書き込む。
-        このメソッドは、一度だけ呼ばれることを想定している
-        """
-        self.__asm_commands.append("(END)",
-                                    "@END",
-                                    "0;JMP")
-        self.__write()
-
 
     def close(self) -> None:
         self.__output_file.close()
@@ -387,6 +385,17 @@ class CodeWriter:
                                     "D=-1"),
         self.__push_to_stack()
         self.__asm_commands.append(f"({SYMBOL_END})")
+        self.__write()
+    
+
+    def __write_infinite_loop(self) -> None:
+        """
+        アセンブリの終了を示す無限ループをファイルに書き込む。
+        このメソッドは、一度だけ呼ばれることを想定している
+        """
+        self.__asm_commands.append("(END)",
+                                    "@END",
+                                    "0;JMP")
         self.__write()
     
 

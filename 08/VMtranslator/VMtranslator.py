@@ -13,7 +13,10 @@ def get_final_path(path: str) -> str:
 
 def generete_output_file_name(path: str):
     final_path: str = get_final_path(path=path)
-    return re.sub(pattern=".vm$", repl=".asm", string=final_path)
+    if re.match(pattern=".vm$", string=final_path) != None:
+        return re.sub(pattern=".vm$", repl=".asm", string=final_path)
+    else:
+        return final_path + ".asm"
 
 
 def main():
@@ -30,7 +33,7 @@ def main():
             if os.path.isfile(path=path_to_file_candidate):
                 if file_candidate_name == START_FILE_NAME:
                     input_files.insert(0, path_to_file_candidate)
-                else:
+                elif re.match(pattern=".*vm$", string=file_candidate_name) != None:
                     input_files.append(path_to_file_candidate)
     elif os.path.isfile(path=PATH_TO_FILE_OR_DIR):
         path_to_file: str = PATH_TO_FILE_OR_DIR
@@ -46,7 +49,7 @@ def main():
     for input_file in input_files:
         parser: Parser = Parser(path_to_input_file=input_file)
         input_file_name: str = get_final_path(path=input_file)
-        code_writer.set_file_name(file_name=input_file_name)
+        code_writer.set_file_name(file_name=re.sub(pattern=".vm$", repl="", string=input_file_name))
 
         while parser.has_more_commands():
             parser.advance()
@@ -86,7 +89,6 @@ def main():
                 print("命令の種類が不正です\n")
                 sys.exit(1)
         
-    code_writer.write_infinite_loop()
     code_writer.close()
 
 
