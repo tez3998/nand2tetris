@@ -102,3 +102,8 @@ RAM[SP] = RAM[ARG]+1
 // 日本語の意味：
 // RAM[ARG]（実態はRAM[2]）に1を足した値をRAM[SP]（実態はRAM[0]）にセットする
 ```
+
+## 7章のBasicTest.vmの動かし方
+1. 作成したバーチャルマシンから生成されたアセンブリと同じディレクトリにBasicTest.tstとBasicTest.cmpをコピーしてくる
+1. CPUEmulatorを開き、`Load Script`（紙のアイコン。ホバーするとLoad Scriptと表示される）をクリックして、BasicTest.tstを読み込む
+1. `>>`のアイコンをクリックし、CPUEmulatorを走らせる
