@@ -204,11 +204,12 @@ class JackTokenizer:
 
 
     def __is_symbol(self, chunk: str) -> bool:
-        for symbol in self.__SYMBOLS:
-            if symbol == chunk:
-                return  True
-        return False
+        return (chunk in self.__SYMBOLS)
     
+
+    def __is_keyword(self, chunk: str) -> bool:
+        return (chunk in self.__KEYWORDS)
+
 
     def __set_keyword(self, keyword: str) -> None:
         self.__token.type = Constant.KEYWORD
@@ -303,7 +304,7 @@ class JackTokenizer:
         if self.__jack_file_reader.has_more_char():
             self.__jack_file_reader.advance()
             char: str = self.__jack_file_reader.get_char()
-            if char in self.__SYMBOLS:
+            if self.__is_symbol(chunk=char):
                 self.__set_symbol(symbol=char)
                 return True
             else:
@@ -322,7 +323,7 @@ class JackTokenizer:
             char = self.__jack_file_reader.get_char()
 
             if char == "\n":
-                if self.__is_symbol(chunk=chunk):
+                if self.__is_keyword(chunk=chunk):
                     self.__set_keyword(keyword=chunk)
                     return
                 else:
@@ -330,7 +331,7 @@ class JackTokenizer:
                     return
 
             chunk += char
-            if self.__is_symbol(chunk=chunk):
+            if self.__is_keyword(chunk=chunk):
                 self.__set_keyword(keyword=chunk)
                 return
             else:
