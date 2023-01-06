@@ -321,7 +321,7 @@ class JackTokenizer:
     
 
     def __set_string_constant(self, str_constant: str) -> None:
-        self.__log(f"- stringConstant\"{str_constant}\"を検出")
+        self.__log(f"stringConstant\"{str_constant}\"を検出")
 
         self.__token.type = Constant.STRING_CONST
         self.__token.string_val = str_constant
