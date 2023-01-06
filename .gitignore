@@ -12,3 +12,9 @@
 08/VMtranslator/*.tst
 08/VMtranslator/*.cmp
 08/VMtranslator/*.out
+
+# プロジェクト10
+10/JackAnalyzer/__pycache__
+10/ArrayTest/*-generated.xml
+10/ExpressionLessSquare/*-generated.xml
+10/Square/*-generated.xml
